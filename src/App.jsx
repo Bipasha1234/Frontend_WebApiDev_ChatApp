@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { InfoProvider } from "./context/InfoContext.jsx";
-import SignInCode from "./core/public/signin-code";
 
 // import CustomerForm from "./core/private/customer/form";
 const CustomerForm = lazy(() => import("./core/private/customer/form"));
@@ -22,6 +21,8 @@ const Login = lazy(() => import("./core/public/login"));
 const LoginCustomer = lazy(() => import("./core/public/login-customer"));
 
 const LoginCustomerCode = lazy(() => import("./core/public/signin-code"));
+
+const OtpVerification = lazy(() => import("./core/public/otp-verification"));
 
 // import Register from "./core/public/register"
 const Register = lazy(() => import("./core/public/register"));
@@ -62,11 +63,22 @@ function App() {
       path: "/login-customer-code",
       element: (
         <Suspense>
-          <SignInCode />
+          <LoginCustomerCode />
         </Suspense>
       ),
       errorElement: <>error</>,
     },
+
+    {
+      path: "/otp-verification",
+      element: (
+        <Suspense>
+          <OtpVerification />
+        </Suspense>
+      ),
+      errorElement: <>error</>,
+    },
+
     {
       path: "/register",
       element: (
