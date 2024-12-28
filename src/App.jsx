@@ -24,6 +24,10 @@ const LoginCustomerCode = lazy(() => import("./core/public/signin-code"));
 
 const OtpVerification = lazy(() => import("./core/public/otp-verification"));
 
+const ForgotPassword = lazy(() => import("./core/public/forgot-password"));
+
+const ForgotPasswordVerification = lazy(() => import("./core/public/forgot-password-verification"));
+
 // import Register from "./core/public/register"
 const Register = lazy(() => import("./core/public/register"));
 
@@ -74,6 +78,26 @@ function App() {
       element: (
         <Suspense>
           <OtpVerification />
+        </Suspense>
+      ),
+      errorElement: <>error</>,
+    },
+
+    {
+      path: "/forgot-password",
+      element: (
+        <Suspense>
+          <ForgotPassword />
+        </Suspense>
+      ),
+      errorElement: <>error</>,
+    },
+
+    {
+      path: "/forgot-password-verification",
+      element: (
+        <Suspense>
+          <ForgotPasswordVerification />
         </Suspense>
       ),
       errorElement: <>error</>,
