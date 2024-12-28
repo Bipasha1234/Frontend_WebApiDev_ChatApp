@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +15,7 @@ function SignInCode() {
     e.preventDefault();
 
     // Reset previous errors
-    setError({ email: '', });
+    setError({ email: '' });
 
     let valid = true;
 
@@ -24,40 +25,37 @@ function SignInCode() {
       valid = false;
     }
 
-
     if (!valid) return;
 
     setLoading(true);
-    setSuccess(false);
+    setError({ email: '' });
 
-    const userData = { email, role: 'user' };
+    const userData = { email };  // Removed 'role' from the request payload
+
+    // Log the data to verify its structure
+    console.log('Request payload:', userData);
 
     try {
-      const response = await fetch('http://localhost:3000/api/user', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:3000/api/user', userData, {
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
+      if (response.status === 200) {
+        // On successful registration, navigate to the OTP verification page
+        navigate('/otp-verification');
       } else {
-        setError({ email: data.message || 'Registration failed' });
+        setError({ email: response.data.message || 'Registration failed' });
       }
     } catch (error) {
       console.error('Error:', error);
-      setError({ email: 'Something went wrong. Please try again later.' });
+      console.error('Error response:', error.response);  // Log the full error response for more info
+      setError({
+        email: error.response?.data?.message || 'Something went wrong. Please try again later.',
+      });
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSignInCodeClick = () => {
-    navigate('/otp-verification');
-  };
-
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
@@ -88,16 +86,10 @@ function SignInCode() {
               loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'
             }`}
             disabled={loading}
-            onClick={handleSignInCodeClick}
           >
             {loading ? 'Processing...' : 'Next'}
-           
           </button>
         </form>
-
-       
-
-        
       </div>
     </div>
   );
