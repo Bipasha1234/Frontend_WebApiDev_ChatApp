@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -11,6 +12,8 @@ function Register() {
     confirmPassword: '',
   });
   const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,6 +68,11 @@ function Register() {
     }
   };
 
+  // Function to handle sign-in redirection
+  const handleSignInClick = () => {
+    navigate('/login-customer');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
       <div
@@ -74,13 +82,13 @@ function Register() {
         <h2 className="text-2xl font-medium text-center text-black mb-6">Create Your Account</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-black font-normal mb-2">
+            <label htmlFor="email" className="text-base block text-black font-normal mb-2">
               Email Address
             </label>
             <input
               type="email"
               id="email"
-              className={`w-full p-3 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+              className={`w-full py-2 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -89,13 +97,13 @@ function Register() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block text-black font-normal mb-2">
+            <label htmlFor="password" className="block text-black text-base font-normal mb-2">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className={`w-full p-3 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+              className={`w-full py-2 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -104,13 +112,13 @@ function Register() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-black font-normal mb-2">
+            <label htmlFor="confirmPassword" className="block text-black font-normal text-base mb-2">
               Confirm Password
             </label>
             <input
               type="password"
               id="confirmPassword"
-              className={`w-full p-3 border ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+              className={`w-full py-2 border ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -120,7 +128,7 @@ function Register() {
 
           <button
             type="submit"
-            className={`w-full p-3 text-white font-semibold rounded-lg transition-all ${
+            className={`w-full py-2 text-white font-semibold rounded-lg transition-all ${
               loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'
             }`}
             disabled={loading}
@@ -135,11 +143,14 @@ function Register() {
           </p>
         )}
 
-        <p className="text-right text-black mt-4">
+        <p className="text-right text-xs text-black mt-4">
           Already have an account?{' '}
-          <a href="/signin" className="hover:underline">
+          <button
+            onClick={handleSignInClick} // Trigger redirection to login page
+            className="hover:underline text-black"
+          >
             Sign In
-          </a>
+          </button>
         </p>
       </div>
     </div>
