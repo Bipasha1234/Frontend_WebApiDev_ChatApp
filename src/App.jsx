@@ -8,6 +8,9 @@ const CustomerForm = lazy(() => import("./core/private/customer/form"));
 // import CustomerIndex from "./core/private/customer";
 const CustomerIndex = lazy(() => import("./core/private/customer"));
 
+const UserProfileSetup = lazy(() => import("./core/private/user-profile-setup/form"));
+
+
 // import Home from "./core/public/home"
 const Home = lazy(() => import("./core/public/home"));
 
@@ -92,10 +95,23 @@ function App() {
           ),
           errorElement: <>error</>,
         },
+        {
+          path: "/user/profile-setup",
+          element: (
+            <Suspense>
+              <UserProfileSetup />
+            </Suspense>
+          ),
+          errorElement: <>error</>,
+        
+        }
+        
       ],
     },
     { path: "*", element: <>Page not found</> },
   ];
+
+
 
   // LOGIN logic TODO
   const isAdmin = false;
