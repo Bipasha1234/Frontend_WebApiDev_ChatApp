@@ -54,6 +54,10 @@ function SignInCode() {
     }
   };
 
+  const handleSignInCodeClick = () => {
+    navigate('/otp-verification');
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
@@ -84,8 +88,10 @@ function SignInCode() {
               loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'
             }`}
             disabled={loading}
+            onClick={handleSignInCodeClick}
           >
             {loading ? 'Processing...' : 'Next'}
+           
           </button>
         </form>
 

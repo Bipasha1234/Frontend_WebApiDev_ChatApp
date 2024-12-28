@@ -52,7 +52,7 @@ const CustomerLogin = () => {
   };
   
   const handleSignInClick = () => {
-    navigate('/chat');
+    navigate('/login-customer-code');
   };
 
   return (
@@ -96,7 +96,7 @@ const CustomerLogin = () => {
 
           <button
             type="submit"
-            className={`w-full bg-[#80CBB2] py-2 rounded-lg text-white font-semibold hover:bg-[#90c9b8] focus:outline-none focus:ring focus:ring-red-600 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`w-full bg-[#80CBB2] py-2 rounded-lg text-white font-semibold hover:bg-[#90c9b8]  ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={isLoading}
           >
             {isLoading ? "Processing..." : "Sign In"}
@@ -112,10 +112,12 @@ const CustomerLogin = () => {
 
 
         <div className="mt-4">
-          <button className="w-full text-sm bg-white py-2 rounded-3xl text-black font-semibold focus:outline-none focus:ring"
+          <button onClick={handleSignInClick}
+          className="w-full text-sm bg-white py-2 rounded-3xl text-black font-semibold"
           style={{ border: "1px solid #80CBB2" }}>
             Sign In with a Code
           </button>
+         
         </div>
 
         <div className="mt-4 text-center">

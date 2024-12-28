@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const SignInCode = () => {
+const OtpVerification = () => {
   const [email, setEmail] = useState('');
   const [timer, setTimer] = useState(60); 
   const [otp, setOtp] = useState(Array(6).fill('')); 
@@ -84,4 +84,4 @@ const SignInCode = () => {
   );
 };
 
-export default SignInCode;
+export default OtpVerification;
