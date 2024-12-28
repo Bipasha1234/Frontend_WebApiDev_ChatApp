@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const CustomerLogin = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +9,9 @@ const CustomerLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({ email: "", password: "" });
+
+  const navigate = useNavigate();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -45,6 +49,10 @@ const CustomerLogin = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleSignInClick = () => {
+    navigate('/chat');
   };
 
   return (
@@ -92,6 +100,7 @@ const CustomerLogin = () => {
             disabled={isLoading}
           >
             {isLoading ? "Processing..." : "Sign In"}
+            
           </button>
         </form>
 
