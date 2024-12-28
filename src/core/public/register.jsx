@@ -82,7 +82,7 @@ function Register() {
         <h2 className="text-2xl font-medium text-center text-black mb-6">Create Your Account</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="text-base block text-black font-normal mb-2">
+            <label htmlFor="email" className=" block text-black text-sm font-medium mb-2">
               Email Address
             </label>
             <input
@@ -97,7 +97,7 @@ function Register() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block text-black text-base font-normal mb-2">
+            <label htmlFor="password" className="block text-black text-sm font-medium  mb-2">
               Password
             </label>
             <input
@@ -112,7 +112,7 @@ function Register() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-black font-normal text-base mb-2">
+            <label htmlFor="confirmPassword" className="block text-black text-sm font-medium mb-2">
               Confirm Password
             </label>
             <input
@@ -143,11 +143,11 @@ function Register() {
           </p>
         )}
 
-        <p className="text-right text-xs text-black mt-4">
+        <p className="text-right text-xs text-gray-500 mt-4">
           Already have an account?{' '}
           <button
             onClick={handleSignInClick} // Trigger redirection to login page
-            className="hover:underline text-black"
+            className="hover:underline text-gray-500"
           >
             Sign In
           </button>
