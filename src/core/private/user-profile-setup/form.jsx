@@ -1,107 +1,141 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function UserProfileSetupForm() {
-  const [userProfile, setUserProfile] = useState({
-    name: "",
-    phoneNumber: "",
-    gender: "",
-    email: "",
-  });
-
+function ProfileSetup() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState({
+    name: '',
+    phoneNumber: '',
+    gender: '',
+    email: '',
+  });
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleInputChange = (e) => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      navigate('/login-customer');
+    } else {
+      fetchProfile(token);
+    }
+  }, [navigate]);
+
+  const fetchProfile = async (token) => {
+    try {
+      const response = await fetch('/api/user/profile/profiles', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProfile(data);
+      } else {
+        console.error('Failed to fetch profile');
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserProfile({ ...userProfile, [name]: value });
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Create the profile data payload
-    const profileData = {
-      name: userProfile.name,
-      phoneNumber: userProfile.phoneNumber,
-      gender: userProfile.gender,
-      email: userProfile.email,
-    };
-  
-    // Retrieve the token from localStorage (or from context)
-    const token = localStorage.getItem("authToken");
-  
-    if (!token) {
-      // If no token exists, redirect to login or handle accordingly
-      alert("Please log in to complete your profile setup.");
-      navigate("/login");  // Redirect to login page
-      return;
-    }
-  
+    const token = localStorage.getItem('token');
+
     try {
-      const response = await fetch("http://localhost:3000/api/user/profile/profile", {
-        method: "POST", // You can change this to PUT if updating an existing profile
+      const response = await fetch('/api/user/profile/profile', {
+        method: profile.id ? 'PUT' : 'POST',
         headers: {
-          "Content-Type": "application/json", // Indicate that you're sending JSON data
-          "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(profileData), // Send the profile data as the body
+        body: JSON.stringify(profile),
       });
-  
+
       if (response.ok) {
-        // If successful, redirect to the home page or dashboard
-        navigate("/home");
+        const data = await response.json();
+        setSuccessMessage(data.message || 'Profile updated successfully!');
       } else {
-        // Handle errors if the response is not OK
-        alert("Failed to save profile. Please try again.");
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to save profile');
       }
     } catch (error) {
-      // Catch and handle any network errors
-      console.error("Error submitting profile:", error);
-      alert("An error occurred while saving your profile. Please try again.");
+      console.error('Error saving profile:', error);
+      setError('An error occurred while saving the profile.');
     }
   };
-  
+
+  if (loading) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1>Setup Your Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={userProfile.name}
-          onChange={handleInputChange}
-        />
-        <br />
-        <label>Phone Number:</label>
-        <input
-          type="text"
-          name="phoneNumber"
-          value={userProfile.phoneNumber}
-          onChange={handleInputChange}
-        />
-        <br />
-        <label>Gender:</label>
-        <input
-          type="text"
-          name="gender"
-          value={userProfile.gender}
-          onChange={handleInputChange}
-        />
-        <br />
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={userProfile.email}
-          onChange={handleInputChange}
-        />
-        <br />
-        <button type="submit">Save Profile</button>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-open-sans">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl text-center text-gray-800 mb-6"> Set Profile</h2>
+
+        <div className="mb-4">
+          <input
+            type="text"
+            name="name"
+            value={profile.name}
+            onChange={handleChange}
+            placeholder="Full Name"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <div className="mb-4">
+          <input
+            type="text"
+            name="phoneNumber"
+            value={profile.phoneNumber}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <div className="mb-4">
+          <input
+            type="text"
+            name="gender"
+            value={profile.gender}
+            onChange={handleChange}
+            placeholder="Gender"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <div className="mb-6">
+          <input
+            type="email"
+            name="email"
+            value={profile.email}
+            onChange={handleChange}
+            placeholder="Email Address"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <button type="submit" className="w-full py-3  text-white rounded-md hover:bg-green-600 transition duration-300 bg-[#80CBB2] " >
+          Save Profile
+        </button>
+
+        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+        {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
       </form>
     </div>
   );
 }
 
-export default UserProfileSetupForm;
+export default ProfileSetup;
