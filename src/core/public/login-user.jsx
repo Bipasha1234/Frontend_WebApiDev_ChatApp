@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from "../../context/authContext.jsx"; // Correct relative path
-// Import useAuth hook
+import Header from "../../components/header.jsx";
+import { useAuth } from "../../context/authContext.jsx";
 
 const CustomerLogin = () => {
   const [email, setEmail] = useState("");
@@ -12,15 +12,13 @@ const CustomerLogin = () => {
   const [error, setError] = useState({ email: "", password: "" });
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // Access the login function from AuthContext
+  const { login } = useAuth(); 
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Reset error messages
     setError({ email: "", password: "" });
 
-    // Basic form validation
     if (!email || !password) {
       setError({
         email: !email ? "Email is required" : "",
@@ -32,29 +30,24 @@ const CustomerLogin = () => {
     try {
       setIsLoading(true);
 
-      // Send login request to backend
       const response = await axios.post("http://localhost:3000/api/auth/login", {
         email,
         password,
       });
 
-      // Store the token and user data (role, etc.)
       const { token, role, userData } = response.data;
 
-      // Store the token and role in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("role", role); 
 
-      // Call the login function from AuthContext to update global user state
-      login(userData); // Set the user data in the context
+      login(userData); 
 
       alert("Login successful!");
 
-      // Redirect based on user role
       if (role === "admin") {
-        navigate("/admin"); // Redirect to admin dashboard
+        navigate("/admin"); 
       } else {
-        navigate("/user/profile-setup"); // Redirect to user profile setup for normal users
+        navigate("/user/profile-setup");
       }
     } catch (error) {
       console.error("Error during login:", error.response?.data || error.message);
@@ -69,7 +62,8 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
+    <><Header />
+    <div className="min-h-screen flex items-start justify-center  mt-10 font-open-sans">
       <div className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
         <h1 className="text-2xl font-medium text-center text-black mb-6">Sign In your Account</h1>
         <form onSubmit={handleLogin}>
@@ -81,8 +75,7 @@ const CustomerLogin = () => {
               className={`w-full py-2 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+              required />
             {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
           </div>
 
@@ -94,8 +87,7 @@ const CustomerLogin = () => {
               className={`w-full py-2 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+              required />
             {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
           </div>
 
@@ -132,13 +124,12 @@ const CustomerLogin = () => {
           <label className="inline-flex items-center text-xs">
             <input
               type="checkbox"
-              className="form-checkbox h-4 w-4"
-            />
+              className="form-checkbox h-4 w-4" />
             <span className="ml-2 text-gray-500">Remember Me</span>
           </label>
         </div>
       </div>
-    </div>
+    </div></>
   );
 };
 

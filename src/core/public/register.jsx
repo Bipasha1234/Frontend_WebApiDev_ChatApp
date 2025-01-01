@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../../components/header';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -13,17 +14,15 @@ function Register() {
   });
   const [success, setSuccess] = useState(false);
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset previous errors
     setError({ email: '', password: '', confirmPassword: '' });
 
     let valid = true;
 
-    // Client-side validation
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setError((prevError) => ({ ...prevError, email: 'Please enter a valid email address' }));
       valid = false;
@@ -68,13 +67,14 @@ function Register() {
     }
   };
 
-  // Function to handle sign-in redirection
   const handleSignInClick = () => {
     navigate('/login-customer');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
+    <><Header />
+    <div className="min-h-screen flex items-start mt-10 justify-center  bg-white font-open-sans">
+
       <div
         className="p-8 rounded-xl shadow-lg w-full max-w-md"
         style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}
@@ -91,8 +91,7 @@ function Register() {
               className={`w-full py-2 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+              required />
             {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
           </div>
 
@@ -106,8 +105,7 @@ function Register() {
               className={`w-full py-2 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+              required />
             {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
           </div>
 
@@ -121,16 +119,13 @@ function Register() {
               className={`w-full py-2 border ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+              required />
             {error.confirmPassword && <p className="text-red-500 text-sm">{error.confirmPassword}</p>}
           </div>
 
           <button
             type="submit"
-            className={`w-full py-2 text-white font-semibold rounded-lg transition-all ${
-              loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'
-            }`}
+            className={`w-full py-2 text-white font-semibold rounded-lg transition-all ${loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'}`}
             disabled={loading}
           >
             {loading ? 'Processing...' : 'Sign Up'}
@@ -146,14 +141,14 @@ function Register() {
         <p className="text-right text-xs text-gray-500 mt-4">
           Already have an account?{' '}
           <button
-            onClick={handleSignInClick} // Trigger redirection to login page
+            onClick={handleSignInClick} 
             className="hover:underline text-gray-500"
           >
             Sign In
           </button>
         </p>
       </div>
-    </div>
+    </div></>
   );
 }
 

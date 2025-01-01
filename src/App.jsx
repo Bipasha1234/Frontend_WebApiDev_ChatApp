@@ -9,7 +9,7 @@ const CustomerIndex = lazy(() => import("./core/private/customer"));
 const UserProfileSetup = lazy(() => import("./core/private/user-profile-setup/form"));
 const Home = lazy(() => import("./core/public/home"));
 const Login = lazy(() => import("./core/public/login"));
-const LoginCustomer = lazy(() => import("./core/public/login-customer"));
+const LoginCustomer = lazy(() => import("./core/public/login-user.jsx"));
 const LoginCustomerCode = lazy(() => import("./core/public/signin-code"));
 const OtpVerification = lazy(() => import("./core/public/otp-verification"));
 const ForgotPassword = lazy(() => import("./core/public/forgot-password"));

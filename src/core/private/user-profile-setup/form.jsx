@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from "../../../components/button";
+import Header from '../../../components/header';
 import TextField from '../../../components/textfield';
-
 
 function ProfileSetup() {
   const navigate = useNavigate();
@@ -82,62 +82,59 @@ function ProfileSetup() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-open-sans">
+    <><Header />
+    <div className="min-h-screen flex items-start mt-10 justify-center bg-white font-open-sans">
       <form onSubmit={handleSubmit} className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
         <h2 className="text-2xl text-center text-gray-800 mb-6"> Set Profile</h2>
 
         <div className="mb-4">
-        <label htmlFor="Full Name" className="block text-black text-sm font-medium mb-2">Full Name</label>
+          <label htmlFor="Full Name" className="block text-black text-sm font-medium mb-2">Full Name</label>
           <TextField
             type="text"
             name="name"
             value={profile.name}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <div className="mb-4">
-        <label htmlFor="Phone Number" className="block text-black text-sm font-medium mb-2">Phone Number</label>
+          <label htmlFor="Phone Number" className="block text-black text-sm font-medium mb-2">Phone Number</label>
           <TextField
             type="text"
             name="phoneNumber"
             value={profile.phoneNumber}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <div className="mb-4">
-        <label htmlFor="Gender" className="block text-black text-sm font-medium mb-2">Gender</label>
+          <label htmlFor="Gender" className="block text-black text-sm font-medium mb-2">Gender</label>
           <TextField
             type="text"
             name="gender"
             value={profile.gender}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <div className="mb-6">
-        <label htmlFor="email" className="block text-black text-sm font-medium mb-2">Email Address</label>
+          <label htmlFor="email" className="block text-black text-sm font-medium mb-2">Email Address</label>
           <TextField
             type="email"
             name="email"
             value={profile.email}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
-        <Button type="submit" className="w-full py-3  text-white rounded-md hover:bg-green-600 transition duration-300 bg-[#80CBB2] " >
+        <Button type="submit" className="w-full py-3  text-white rounded-md hover:bg-green-600 transition duration-300 bg-[#80CBB2] ">
           Save Profile
         </Button>
 
         {error && <p className="text-red-500 text-center mt-4">{error}</p>}
         {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
       </form>
-    </div>
+    </div></>
   );
 }
 
