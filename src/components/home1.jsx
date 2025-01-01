@@ -24,7 +24,7 @@ function ChatArea() {
           <img src={icon1} alt="Chat Illustration" className="w-auto h-56 object-contain" />
           <img src={icon5} alt="Chat" className="w-auto h-52 object-contain" />
           <div className="flex space-x-4 mt-6">
-            <button onClick={handleRegister} className="bg-[#80CBB2] text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center space-x-2">
+            <button onClick={handleRegister} className="bg-[#61b196]  hover:bg-[#449177] text-white px-4 py-2 rounded-lg  flex items-center space-x-2">
               <UserPlusIcon className="h-5 w-5" />
               <span>Register</span>
             </button>

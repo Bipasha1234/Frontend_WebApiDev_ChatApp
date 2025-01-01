@@ -25,7 +25,7 @@ function Header() {
         </nav>
 
         <div className="hidden md:flex space-x-4">
-          <button onClick={handleLogIn} className="bg-[#80CBB2] text-white px-4 py-2 rounded hover:bg-green-600 flex items-center space-x-2">
+          <button onClick={handleLogIn} className="bg-[#61b196] text-white px-4 py-2 rounded hover:bg-[#449177] flex items-center space-x-2">
             <span>Login</span>
             <ChevronRightIcon className="h-5 w-5" />
           </button>
