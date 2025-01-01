@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from "../../components/footer";
 import Header from "../../components/header";
 import ChatArea from "../../components/home1";
 
@@ -9,6 +10,7 @@ function App() {
       <div className="container mx-auto p-4">
         <ChatArea />
       </div>
+      <Footer />
     </div>
   );
 }
