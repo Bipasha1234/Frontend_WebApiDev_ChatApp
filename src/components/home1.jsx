@@ -1,5 +1,5 @@
 import { ArrowDownTrayIcon, UserPlusIcon } from "@heroicons/react/20/solid";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import icon1 from "../assets/images/image1.png";
 import icon10 from "../assets/images/image10.png";
 import icon3 from "../assets/images/image3.png";
@@ -9,7 +9,14 @@ import icon6 from "../assets/images/image6.png";
 import icon7 from "../assets/images/image7.png";
 import icon8 from "../assets/images/image8.png";
 import icon9 from "../assets/images/image9.png";
+
 function ChatArea() {
+  const navigate = useNavigate();  
+
+  const handleRegister = () => {
+    navigate('/register'); 
+  };
+
   return (
     <>
       <div className="bg-[#ccebe0] rounded-lg shadow-lg p-6 flex flex-col md:flex-row items-start relative max-w-full h-auto md:h-[600px] font-open-sans">
@@ -17,7 +24,7 @@ function ChatArea() {
           <img src={icon1} alt="Chat Illustration" className="w-auto h-56 object-contain" />
           <img src={icon5} alt="Chat" className="w-auto h-52 object-contain" />
           <div className="flex space-x-4 mt-6">
-            <button className="bg-[#80CBB2] text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center space-x-2">
+            <button onClick={handleRegister} className="bg-[#80CBB2] text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center space-x-2">
               <UserPlusIcon className="h-5 w-5" />
               <span>Register</span>
             </button>
@@ -79,8 +86,6 @@ function ChatArea() {
             <img src={icon10} alt="Private Messaging Illustration" className="w-auto h-96 object-contain mr-10 mt-10" />
           </div>
         </div>
-
-        
       </div>
     </>
   );
