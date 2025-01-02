@@ -6,7 +6,7 @@ import { AuthProvider, useAuth } from "./context/authContext.jsx";
 // Lazy load components
 const CustomerForm = lazy(() => import("./core/private/customer/form"));
 const CustomerIndex = lazy(() => import("./core/private/customer"));
-const UserProfileSetup = lazy(() => import("./core/private/user-profile-setup/form"));
+const UserProfileSetup = lazy(() => import("./core/public/user-profile-setup/form.jsx"));
 const UserChat = lazy(() => import("./core/private/chat/form"));
 const Home = lazy(() => import("./core/public/home"));
 const Login = lazy(() => import("./core/public/login"));

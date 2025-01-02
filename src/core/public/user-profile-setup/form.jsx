@@ -16,9 +16,12 @@ const ProfileSetup = () => {
     aboutYou: '',
     image: null, // Add image state for image
   });
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [isFormValid, setIsFormValid] = useState(true);
+
+  const [errors, setErrors] = useState({
+    name: '',
+    phoneNumber: '',
+    aboutYou: '',
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +29,14 @@ const ProfileSetup = () => {
       ...prevProfile,
       [name]: value,
     }));
+
+    // Clear error for the field being updated
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '',
+    }));
   };
 
-  // Handling the image file change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setProfile((prevProfile) => ({
@@ -39,33 +47,64 @@ const ProfileSetup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-  
+
+    // Initialize errors
+    const newErrors = {
+      name: '',
+      phoneNumber: '',
+    };
+
+    let isValid = true;
+
+    // Validate name
+    if (!profile.name) {
+      newErrors.name = 'Name is required.';
+      isValid = false;
+    }
+
+    // Validate phone number
+    if (!profile.phoneNumber) {
+      newErrors.phoneNumber = 'Phone Number is required.';
+      isValid = false;
+    } else if (!/^\d{10}$/.test(profile.phoneNumber)) {
+      newErrors.phoneNumber = 'Please enter a valid 10-digit phone number.';
+      isValid = false;
+    }
+
+    // Update errors state
+    setErrors(newErrors);
+
+    if (!isValid) {
+      return; // Prevent form submission if there are errors
+    }
+
     const formData = new FormData();
     formData.append("name", profile.name);
     formData.append("phoneNumber", profile.phoneNumber);
-    formData.append("aboutYou", profile.aboutYou);
-  
-    // If there's an image, append it as well
+
+    // Append aboutYou only if provided
+    if (profile.aboutYou) {
+      formData.append("aboutYou", profile.aboutYou);
+    }
+
     if (profile.image) {
       formData.append("image", profile.image);
     }
-  
+
     try {
-      const response = await axios.post('http://localhost:3000/api/user/profile/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'http://localhost:3000/api/user/profile/create',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       console.log('Profile Created:', response.data);
-      setSuccessMessage('Profile successfully created');
-      
-      // Redirect to the /chat route upon success
       navigate('/login-customer');
-    } catch (error) {
-      console.error('Error creating profile:', error.response ? error.response.data : error.message);
-      setError('An error occurred while creating the profile.');
+    } catch (err) {
+      console.error('Error:', err.message);
     }
   };
 
@@ -76,7 +115,7 @@ const ProfileSetup = () => {
         <form onSubmit={handleSubmit} className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
           <h2 className="text-2xl text-center text-gray-800 mb-6">Set Profile</h2>
 
-          {/* image Section */}
+          {/* Image Section */}
           <div className="flex justify-center mb-6">
             <div className="relative">
               <img
@@ -94,7 +133,6 @@ const ProfileSetup = () => {
             </div>
           </div>
 
-          {/* Hidden file input triggered by the FaEdit icon */}
           <input
             id="imageInput"
             type="file"
@@ -112,8 +150,8 @@ const ProfileSetup = () => {
                 name="name"
                 value={profile.name}
                 onChange={handleChange}
-                className=""
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
 
             <div className="mb-4">
@@ -123,8 +161,8 @@ const ProfileSetup = () => {
                 name="phoneNumber"
                 value={profile.phoneNumber}
                 onChange={handleChange}
-                className=""
               />
+              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
           </div>
 
@@ -134,9 +172,7 @@ const ProfileSetup = () => {
               name="aboutYou"
               value={profile.aboutYou}
               onChange={handleChange}
-              className=""
-            >
-            </TextField>
+            />
           </div>
 
           <div className="mt-6">
@@ -144,10 +180,6 @@ const ProfileSetup = () => {
               Save Profile
             </Button>
           </div>
-
-          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
-          {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
-          {!isFormValid && <p className="text-red-500 text-center mt-4">Please fill out all fields.</p>}
         </form>
       </div>
     </>
