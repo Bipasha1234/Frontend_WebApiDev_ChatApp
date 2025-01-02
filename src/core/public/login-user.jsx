@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import Button from "../../components/button.jsx";
 import Header from "../../components/header.jsx";
 import { useAuth } from "../../context/authContext.jsx";
 
@@ -47,7 +48,7 @@ const CustomerLogin = () => {
       if (role === "admin") {
         navigate("/admin"); 
       } else {
-        navigate("/user/profile-setup");
+        navigate("/chat");
       }
     } catch (error) {
       console.error("Error during login:", error.response?.data || error.message);
@@ -59,6 +60,9 @@ const CustomerLogin = () => {
 
   const handleForgotPasswordClick = () => {
     navigate('/forgot-password');
+  };
+  const handleSignUpClick = () => {
+    navigate('/register');
   };
 
   return (
@@ -90,14 +94,22 @@ const CustomerLogin = () => {
               required />
             {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
           </div>
+          <div className="mt-2 mb-2">
+          <label className="inline-flex items-center text-xs">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4" />
+            <span className="ml-2 text-gray-500">Remember Me</span>
+          </label>
+        </div>
 
-          <button
+          <Button
             type="submit"
-            className={`w-full bg-[#80CBB2] py-2 rounded-lg text-white font-semibold hover:bg-[#90c9b8] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={""}
             disabled={isLoading}
           >
             {isLoading ? "Processing..." : "Sign In"}
-          </button>
+          </Button>
         </form>
 
         <div className="flex items-center text-xs justify-center mt-4">
@@ -109,7 +121,7 @@ const CustomerLogin = () => {
         <div className="mt-4">
           <button
             onClick={() => navigate('/login-customer-code')}
-            className="w-full text-sm bg-white py-2 rounded-3xl text-black font-semibold"
+            className="w-full text-sm bg-white py-3 rounded-3xl text-black font-semibold"
             style={{ border: "1px solid #80CBB2" }}
           >
             Sign In with a Code
@@ -117,17 +129,19 @@ const CustomerLogin = () => {
         </div>
 
         <div onClick={handleForgotPasswordClick} className="mt-4 text-center cursor-pointer">
-          <a className="text-gray-500 hover:text-gray-400 text-xs">Forgot Password?</a>
+          <a className="text-gray-600 hover:text-gray-700 text-xs hover:underline">Forgot Password?</a>
         </div>
+        <p className="text-right text-xs text-gray-700 hover:text-gray-700 mt-4">
+          Do not have an account?{' '}
+          <button
+            onClick={handleSignUpClick} 
+            className="hover:underline hover:text-gray-900 text-gray-700"
+          >
+            Sign Up
+          </button>
+        </p>
 
-        <div className="mt-4">
-          <label className="inline-flex items-center text-xs">
-            <input
-              type="checkbox"
-              className="form-checkbox h-4 w-4" />
-            <span className="ml-2 text-gray-500">Remember Me</span>
-          </label>
-        </div>
+        
       </div>
     </div></>
   );

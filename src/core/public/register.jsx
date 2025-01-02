@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header';
-
+import { useAuth } from "../../context/authContext.jsx";
 function Register() {
+   const { login } = useAuth(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,7 +15,7 @@ function Register() {
   });
   const [success, setSuccess] = useState(false);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +56,24 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess(true);
+        const { token, role, userData } = data;
+
+        // Storing the token and role in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
+
+        // Set the user data in the application state or context
+        login(userData); // Assuming login is a function for setting user data (maybe context)
+
+        setSuccess(true); // Indicate successful registration
+        alert("Registration successful! Please check your email for verification.");
+
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/user/profile-setup");
+        }
       } else {
         setError({ email: data.message || 'Registration failed' });
       }
@@ -67,88 +85,90 @@ function Register() {
     }
   };
 
+
   const handleSignInClick = () => {
     navigate('/login-customer');
   };
 
   return (
-    <><Header />
-    <div className="min-h-screen flex items-start mt-10 justify-center  bg-white font-open-sans">
+    <>
+      <Header />
+      <div className="min-h-screen flex items-start mt-10 justify-center bg-white font-open-sans">
+        <div
+          className="p-8 rounded-xl shadow-lg w-full max-w-md"
+          style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}
+        >
+          <h2 className="text-2xl font-medium text-center text-black mb-6">Create Your Account</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-black text-sm font-medium mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                className={`w-full py-2 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required />
+              {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
+            </div>
 
-      <div
-        className="p-8 rounded-xl shadow-lg w-full max-w-md"
-        style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}
-      >
-        <h2 className="text-2xl font-medium text-center text-black mb-6">Create Your Account</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className=" block text-black text-sm font-medium mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              className={`w-full py-2 border ${error.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required />
-            {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
-          </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-black text-sm font-medium mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className={`w-full py-2 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required />
+              {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-black text-sm font-medium  mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className={`w-full py-2 border ${error.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required />
-            {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
-          </div>
+            <div className="mb-6">
+              <label htmlFor="confirmPassword" className="block text-black text-sm font-medium mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className={`w-full py-2 border ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required />
+              {error.confirmPassword && <p className="text-red-500 text-sm">{error.confirmPassword}</p>}
+            </div>
 
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-black text-sm font-medium mb-2">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className={`w-full py-2 border ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-white`}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required />
-            {error.confirmPassword && <p className="text-red-500 text-sm">{error.confirmPassword}</p>}
-          </div>
+            <button
+              type="submit"
+              className={`w-full py-2 text-white font-semibold rounded-lg transition-all ${loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'}`}
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : 'Sign Up'}
+            </button>
+          </form>
 
-          <button
-            type="submit"
-            className={`w-full py-2 text-white font-semibold rounded-lg transition-all ${loading ? 'bg-[#80CBB2] cursor-not-allowed' : 'bg-[#80CBB2] hover:bg-[#90c9b8] hover:text-white'}`}
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : 'Sign Up'}
-          </button>
-        </form>
+          {success && (
+            <p className="mt-4 text-center text-green-600">
+              Registration successful! Please check your email for verification.
+            </p>
+          )}
 
-        {success && (
-          <p className="mt-4 text-center text-green-600">
-            Registration successful! Please check your email for verification.
+          <p className="text-right text-xs text-gray-500 mt-4">
+            Already have an account?{' '}
+            <button
+              onClick={handleSignInClick} 
+              className="hover:underline text-gray-500"
+            >
+              Sign In
+            </button>
           </p>
-        )}
-
-        <p className="text-right text-xs text-gray-500 mt-4">
-          Already have an account?{' '}
-          <button
-            onClick={handleSignInClick} 
-            className="hover:underline text-gray-500"
-          >
-            Sign In
-          </button>
-        </p>
+        </div>
       </div>
-    </div></>
+    </>
   );
 }
 

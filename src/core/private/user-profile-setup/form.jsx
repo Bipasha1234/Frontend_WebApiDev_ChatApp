@@ -1,141 +1,157 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Ensure axios is imported
+import React, { useState } from 'react';
+import { FaEdit } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
+import user from '../../../assets/images/user.png';
 import Button from "../../../components/button";
 import Header from '../../../components/header';
 import TextField from '../../../components/textfield';
 
-function ProfileSetup() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+const ProfileSetup = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
   const [profile, setProfile] = useState({
     name: '',
     phoneNumber: '',
-    gender: '',
-    email: '',
+    aboutYou: '',
+    image: null, // Add image state for image
   });
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      navigate('/login-customer');
-    } else {
-      fetchProfile(token);
-    }
-  }, [navigate]);
-
-  const fetchProfile = async (token) => {
-    try {
-      const response = await fetch('/api/user/profile/profiles', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-      } else {
-        console.error('Failed to fetch profile');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [isFormValid, setIsFormValid] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
+  };
+
+  // Handling the image file change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      image: file,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-
+    setError('');
+    setSuccessMessage('');
+  
+    const formData = new FormData();
+    formData.append("name", profile.name);
+    formData.append("phoneNumber", profile.phoneNumber);
+    formData.append("aboutYou", profile.aboutYou);
+  
+    // If there's an image, append it as well
+    if (profile.image) {
+      formData.append("image", profile.image);
+    }
+  
     try {
-      const response = await fetch('/api/user/profile/profile', {
-        method: profile.id ? 'PUT' : 'POST',
+      const response = await axios.post('http://localhost:3000/api/user/profile/create', formData, {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify(profile),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSuccessMessage(data.message || 'Profile updated successfully!');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to save profile');
-      }
+      console.log('Profile Created:', response.data);
+      setSuccessMessage('Profile successfully created');
+      
+      // Redirect to the /chat route upon success
+      navigate('/login-customer');
     } catch (error) {
-      console.error('Error saving profile:', error);
-      setError('An error occurred while saving the profile.');
+      console.error('Error creating profile:', error.response ? error.response.data : error.message);
+      setError('An error occurred while creating the profile.');
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-
   return (
-    <><Header />
-    <div className="min-h-screen flex items-start mt-10 justify-center bg-white font-open-sans">
-      <form onSubmit={handleSubmit} className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
-        <h2 className="text-2xl text-center text-gray-800 mb-6"> Set Profile</h2>
+    <>
+      <Header />
+      <div className="min-h-screen flex items-start mt-10 justify-center bg-white font-open-sans">
+        <form onSubmit={handleSubmit} className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
+          <h2 className="text-2xl text-center text-gray-800 mb-6">Set Profile</h2>
 
-        <div className="mb-4">
-          <label htmlFor="Full Name" className="block text-black text-sm font-medium mb-2">Full Name</label>
-          <TextField
-            type="text"
-            name="name"
-            value={profile.name}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        </div>
+          {/* image Section */}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <img
+                src={profile.image ? URL.createObjectURL(profile.image) : user}
+                alt="profile"
+                className="w-24 h-24 rounded-full border-4 border-white"
+              />
+              <button
+                type="button"
+                onClick={() => document.getElementById('imageInput').click()}
+                className="absolute bottom-0 right-0 bg-[#2f8e6f] p-2 rounded-full text-white"
+              >
+                <FaEdit size={16} />
+              </button>
+            </div>
+          </div>
 
-        <div className="mb-4">
-          <label htmlFor="Phone Number" className="block text-black text-sm font-medium mb-2">Phone Number</label>
-          <TextField
-            type="text"
-            name="phoneNumber"
-            value={profile.phoneNumber}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        </div>
+          {/* Hidden file input triggered by the FaEdit icon */}
+          <input
+            id="imageInput"
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: 'none' }} // Hide the file input
+          />
 
-        <div className="mb-4">
-          <label htmlFor="Gender" className="block text-black text-sm font-medium mb-2">Gender</label>
-          <TextField
-            type="text"
-            name="gender"
-            value={profile.gender}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        </div>
+          <div className="grid grid-cols-2 gap-x-2">
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-black text-sm font-normal mb-2">Full Name</label>
+              <TextField
+                type="text"
+                name="name"
+                value={profile.name}
+                onChange={handleChange}
+                className=""
+              />
+            </div>
 
-        <div className="mb-6">
-          <label htmlFor="email" className="block text-black text-sm font-medium mb-2">Email Address</label>
-          <TextField
-            type="email"
-            name="email"
-            value={profile.email}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        </div>
+            <div className="mb-4">
+              <label htmlFor="phoneNumber" className="block text-black text-sm font-normal mb-2">Phone Number</label>
+              <TextField
+                type="text"
+                name="phoneNumber"
+                value={profile.phoneNumber}
+                onChange={handleChange}
+                className=""
+              />
+            </div>
+          </div>
 
-        <Button type="submit" className="w-full py-3  text-white rounded-md hover:bg-green-600 transition duration-300 bg-[#80CBB2] ">
-          Save Profile
-        </Button>
+          <div className="mb-4">
+            <label htmlFor="aboutYou" className="block text-black text-sm font-normal mb-2">About You (Bio)</label>
+            <TextField
+              name="aboutYou"
+              value={profile.aboutYou}
+              onChange={handleChange}
+              className=""
+            >
+            </TextField>
+          </div>
 
-        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
-        {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
-      </form>
-    </div></>
+          <div className="mt-6">
+            <Button type="submit">
+              Save Profile
+            </Button>
+          </div>
+
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+          {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
+          {!isFormValid && <p className="text-red-500 text-center mt-4">Please fill out all fields.</p>}
+        </form>
+      </div>
+    </>
   );
-}
+};
 
 export default ProfileSetup;

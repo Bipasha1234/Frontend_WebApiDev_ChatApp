@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "./context/authContext.jsx";
 const CustomerForm = lazy(() => import("./core/private/customer/form"));
 const CustomerIndex = lazy(() => import("./core/private/customer"));
 const UserProfileSetup = lazy(() => import("./core/private/user-profile-setup/form"));
+const UserChat = lazy(() => import("./core/private/chat/form"));
 const Home = lazy(() => import("./core/public/home"));
 const Login = lazy(() => import("./core/public/login"));
 const LoginCustomer = lazy(() => import("./core/public/login-user.jsx"));
@@ -53,6 +54,7 @@ function AuthRoutes() {
 
   const privateUserRoutes = [
     { path: "/user/profile-setup", element: <Suspense fallback={<div>Loading...</div>}><UserProfileSetup /></Suspense> },
+    { path: "/chat", element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense> },
     { path: "*", element: <div>404 - Unauthorized</div> },
   ];
 
