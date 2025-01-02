@@ -42,6 +42,7 @@ function AuthRoutes() {
     { path: "/forgot-password", element: <Suspense fallback={<div>Loading...</div>}><ForgotPassword /></Suspense> },
     { path: "/forgot-password-verification", element: <Suspense fallback={<div>Loading...</div>}><ForgotPasswordVerification /></Suspense> },
     { path: "/register", element: <Suspense fallback={<div>Loading...</div>}><Register /></Suspense> },
+    { path: "/user/profile-setup", element: <Suspense fallback={<div>Loading...</div>}><UserProfileSetup /></Suspense> },
     { path: "*", element: <div>404 - Unauthorized</div> },
   ];
 
@@ -53,7 +54,6 @@ function AuthRoutes() {
   ];
 
   const privateUserRoutes = [
-    { path: "/user/profile-setup", element: <Suspense fallback={<div>Loading...</div>}><UserProfileSetup /></Suspense> },
     { path: "/chat", element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense> },
     { path: "*", element: <div>404 - Unauthorized</div> },
   ];
