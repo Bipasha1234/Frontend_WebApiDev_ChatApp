@@ -1,189 +1,104 @@
-import axios from 'axios'; // Ensure axios is imported
-import React, { useState } from 'react';
-import { FaEdit } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
-import user from '../../../assets/images/user.png';
-import Button from "../../../components/button";
-import Header from '../../../components/header';
-import TextField from '../../../components/textfield';
+import { Camera, Mail, User } from "lucide-react";
+import { useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
-const ProfileSetup = () => {
-  const navigate = useNavigate(); // Initialize navigate
+const ProfilePage = () => {
+  const { authUser, isCreatingProfile, createProfile } = useAuthStore();
+  const [selectedImg, setSelectedImg] = useState(null);
 
-  const [profile, setProfile] = useState({
-    name: '',
-    phoneNumber: '',
-    aboutYou: '',
-    image: null, // Add image state for image
-  });
-
-  const [errors, setErrors] = useState({
-    name: '',
-    phoneNumber: '',
-    aboutYou: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      [name]: value,
-    }));
-
-    // Clear error for the field being updated
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
-    }));
-  };
-
-  const handleImageChange = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      image: file,
-    }));
-  };
+    if (!file) return;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const reader = new FileReader();
 
-    // Initialize errors
-    const newErrors = {
-      name: '',
-      phoneNumber: '',
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSelectedImg(base64Image);
+      await createProfile({image: base64Image });
     };
-
-    let isValid = true;
-
-    // Validate name
-    if (!profile.name) {
-      newErrors.name = 'Name is required.';
-      isValid = false;
-    }
-
-    // Validate phone number
-    if (!profile.phoneNumber) {
-      newErrors.phoneNumber = 'Phone Number is required.';
-      isValid = false;
-    } else if (!/^\d{10}$/.test(profile.phoneNumber)) {
-      newErrors.phoneNumber = 'Please enter a valid 10-digit phone number.';
-      isValid = false;
-    }
-
-    // Update errors state
-    setErrors(newErrors);
-
-    if (!isValid) {
-      return; // Prevent form submission if there are errors
-    }
-
-    const formData = new FormData();
-    formData.append("name", profile.name);
-    formData.append("phoneNumber", profile.phoneNumber);
-
-    // Append aboutYou only if provided
-    if (profile.aboutYou) {
-      formData.append("aboutYou", profile.aboutYou);
-    }
-
-    if (profile.image) {
-      formData.append("image", profile.image);
-    }
-
-    try {
-      const response = await axios.post(
-        'http://localhost:3000/api/user/profile/create',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      console.log('Profile Created:', response.data);
-      navigate('/login-customer');
-    } catch (err) {
-      console.error('Error:', err.message);
-    }
   };
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen flex items-start mt-10 justify-center bg-white font-open-sans">
-        <form onSubmit={handleSubmit} className="p-8 rounded-xl shadow-lg w-full max-w-md" style={{ backgroundColor: 'rgba(152, 211, 191, 0.4)' }}>
-          <h2 className="text-2xl text-center text-gray-800 mb-6">Set Profile</h2>
+    <div className="h-screen pt-20">
+      <div className="max-w-2xl mx-auto p-4 py-8">
+        <div className="bg-base-300 rounded-xl p-6 space-y-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold ">Profile</h1>
+            <p className="mt-2">Your profile information</p>
+          </div>
 
-          {/* Image Section */}
-          <div className="flex justify-center mb-6">
+          {/* avatar upload section */}
+
+          <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={profile.image ? URL.createObjectURL(profile.image) : user}
-                alt="profile"
-                className="w-24 h-24 rounded-full border-4 border-white"
+                src={selectedImg || authUser.image || "/avatar.png"}
+                alt="Profile"
+                className="size-32 rounded-full object-cover border-4 "
               />
-              <button
-                type="button"
-                onClick={() => document.getElementById('imageInput').click()}
-                className="absolute bottom-0 right-0 bg-[#2f8e6f] p-2 rounded-full text-white"
+              <label
+                htmlFor="avatar-upload"
+                className={`
+                  absolute bottom-0 right-0 
+                  bg-base-content hover:scale-105
+                  p-2 rounded-full cursor-pointer 
+                  transition-all duration-200
+                  ${isCreatingProfile ? "animate-pulse pointer-events-none" : ""}
+                `}
               >
-                <FaEdit size={16} />
-              </button>
+                <Camera className="w-5 h-5 text-base-200" />
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isCreatingProfile}
+                />
+              </label>
+            </div>
+            <p className="text-sm text-zinc-400">
+              {isCreatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-1.5">
+              <div className="text-sm text-zinc-400 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Full Name
+              </div>
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="text-sm text-zinc-400 flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                Email Address
+              </div>
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.email}</p>
             </div>
           </div>
 
-          <input
-            id="imageInput"
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ display: 'none' }} // Hide the file input
-          />
-
-          <div className="grid grid-cols-2 gap-x-2">
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-black text-sm font-normal mb-2">Full Name</label>
-              <TextField
-                type="text"
-                name="name"
-                value={profile.name}
-                onChange={handleChange}
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="phoneNumber" className="block text-black text-sm font-normal mb-2">Phone Number</label>
-              <TextField
-                type="text"
-                name="phoneNumber"
-                value={profile.phoneNumber}
-                onChange={handleChange}
-              />
-              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+          <div className="mt-6 bg-base-300 rounded-xl p-6">
+            <h2 className="text-lg font-medium  mb-4">Account Information</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between py-2 border-b border-zinc-700">
+                <span>Member Since</span>
+                <span>{authUser.createdAt?.split("T")[0]}</span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span>Account Status</span>
+                <span className="text-green-500">Active</span>
+              </div>
             </div>
           </div>
-
-          <div className="mb-4">
-            <label htmlFor="aboutYou" className="block text-black text-sm font-normal mb-2">About You (Bio)</label>
-            <TextField
-              name="aboutYou"
-              value={profile.aboutYou}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mt-6">
-            <Button type="submit">
-              Save Profile
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
-
-export default ProfileSetup;
+export default ProfilePage;

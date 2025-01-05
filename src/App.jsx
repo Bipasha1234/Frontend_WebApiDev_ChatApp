@@ -1,69 +1,219 @@
-import { lazy, Suspense } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { InfoProvider } from "./context/InfoContext.jsx";
-import { AuthProvider, useAuth } from "./context/authContext.jsx";
+// import { lazy, Suspense } from "react";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { InfoProvider } from "./context/InfoContext.jsx";
+// import { AuthProvider, useAuth } from "./context/authContext.jsx";
 
-// Lazy load components
-const CustomerForm = lazy(() => import("./core/private/customer/form"));
-const CustomerIndex = lazy(() => import("./core/private/customer"));
-const UserProfileSetup = lazy(() => import("./core/public/user-profile-setup/form.jsx"));
-const UserChat = lazy(() => import("./core/private/chat/form"));
-const Home = lazy(() => import("./core/public/home"));
-const Login = lazy(() => import("./core/public/login"));
-const LoginCustomer = lazy(() => import("./core/public/login-user.jsx"));
-const LoginCustomerCode = lazy(() => import("./core/public/signin-code"));
-const OtpVerification = lazy(() => import("./core/public/otp-verification"));
-const ForgotPassword = lazy(() => import("./core/public/forgot-password"));
-const ForgotPasswordVerification = lazy(() => import("./core/public/forgot-password-verification"));
-const Register = lazy(() => import("./core/public/register"));
-const Layout = lazy(() => import("./core/private/layout"));
+// // Lazy load components
+// const CustomerForm = lazy(() => import("./core/private/customer/form"));
+// const CustomerIndex = lazy(() => import("./core/private/customer"));
+// const UserProfileSetup = lazy(() => import("./core/public/user-profile-setup/form"));
+// const UserChat = lazy(() => import("./core/private/chat/form"));
+// const Home = lazy(() => import("./core/public/home"));
+
+// const LoginCustomer = lazy(() => import("./core/public/login-user.jsx"));
+// const LoginCustomerCode = lazy(() => import("./core/public/signin-code"));
+// const OtpVerification = lazy(() => import("./core/public/otp-verification"));
+// const ForgotPassword = lazy(() => import("./core/public/forgot-password"));
+// const ForgotPasswordVerification = lazy(() => import("./core/public/forgot-password-verification"));
+// const Register = lazy(() => import("./core/public/register"));
+// const Layout = lazy(() => import("./core/private/layout"));
+
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <InfoProvider>
+//         <AuthRoutes />
+//       </InfoProvider>
+//     </AuthProvider>
+//   );
+// }
+
+// function AuthRoutes() {
+//   const { user } = useAuth(); // Now inside AuthProvider
+//   const isAdmin = user?.role === 'admin';  // Check if the user is an admin
+//   const isLoggedIn = user !== null; // Check if the user is logged in
+
+//   const publicRoutes = [
+//     { path: "/", element: <Suspense fallback={<div>Loading...</div>}><Home /></Suspense> },
+//     { path: "/login", element: <Suspense fallback={<div>Loading...</div>}><Login /></Suspense> },
+//     { path: "/login-customer", element: <Suspense fallback={<div>Loading...</div>}><LoginCustomer /></Suspense> },
+//     { path: "/login-customer-code", element: <Suspense fallback={<div>Loading...</div>}><LoginCustomerCode /></Suspense> },
+//     { path: "/chat", element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense> },
+//     { path: "/otp-verification", element: <Suspense fallback={<div>Loading...</div>}><OtpVerification /></Suspense> },
+//     { path: "/forgot-password", element: <Suspense fallback={<div>Loading...</div>}><ForgotPassword /></Suspense> },
+//     { path: "/forgot-password-verification", element: <Suspense fallback={<div>Loading...</div>}><ForgotPasswordVerification /></Suspense> },
+//     { path: "/register", element: <Suspense fallback={<div>Loading...</div>}><Register /></Suspense> },
+//     { path: "/user/profile-setup", element: <Suspense fallback={<div>Loading...</div>}><UserProfileSetup /></Suspense> },
+//     { path: "*", element: <div>404 - Unauthorized</div> },
+//   ];
+
+//   const privateAdminRoutes = [
+//     { path: "/admin", element: <Suspense fallback={<div>Loading...</div>}><Layout /></Suspense> },
+//     { path: "/admin/customer", element: <Suspense fallback={<div>Loading...</div>}><CustomerIndex /></Suspense> },
+//     { path: "/admin/customer/form", element: <Suspense fallback={<div>Loading...</div>}><CustomerForm /></Suspense> },
+//     { path: "*", element: <div>404 - Unauthorized</div> },
+//   ];
+
+//   const privateUserRoutes = [
+   
+//     { path: "/chat", element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense> },
+//     { path: "*", element: <div>404 - Unauthorized</div> },
+//   ];
+
+//   // Choose the correct set of routes based on the user status
+//   const routes = isAdmin ? privateAdminRoutes : isLoggedIn ? privateUserRoutes : publicRoutes;
+
+//   return (
+//     <RouterProvider router={createBrowserRouter(routes)} />
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+
+
+
+// src/App.js
+
+
+
+import { Loader } from "lucide-react";
+import { useEffect } from "react";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { useAuthStore } from "../src/core/public/store/useAuthStore.js";
+import UserChat from "./core/private/chat/form";
+import Home from "./core/public/home";
+import LoginCustomer from "./core/public/login-user.jsx";
+import Register from "./core/public/register";
+import UserProfileSetup from "./core/public/user-profile-setup/form";
 
 function App() {
-  return (
-    <AuthProvider>
-      <InfoProvider>
-        <AuthRoutes />
-      </InfoProvider>
-    </AuthProvider>
-  );
-}
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
 
-function AuthRoutes() {
-  const { user } = useAuth(); // Now inside AuthProvider
-  const isAdmin = user?.role === 'admin';  // Check if the user is an admin
-  const isLoggedIn = user !== null; // Check if the user is logged in
+  console.log({ onlineUsers });
 
-  const publicRoutes = [
-    { path: "/", element: <Suspense fallback={<div>Loading...</div>}><Home /></Suspense> },
-    { path: "/login", element: <Suspense fallback={<div>Loading...</div>}><Login /></Suspense> },
-    { path: "/login-customer", element: <Suspense fallback={<div>Loading...</div>}><LoginCustomer /></Suspense> },
-    { path: "/login-customer-code", element: <Suspense fallback={<div>Loading...</div>}><LoginCustomerCode /></Suspense> },
-    { path: "/otp-verification", element: <Suspense fallback={<div>Loading...</div>}><OtpVerification /></Suspense> },
-    { path: "/forgot-password", element: <Suspense fallback={<div>Loading...</div>}><ForgotPassword /></Suspense> },
-    { path: "/forgot-password-verification", element: <Suspense fallback={<div>Loading...</div>}><ForgotPasswordVerification /></Suspense> },
-    { path: "/register", element: <Suspense fallback={<div>Loading...</div>}><Register /></Suspense> },
-    { path: "/user/profile-setup", element: <Suspense fallback={<div>Loading...</div>}><UserProfileSetup /></Suspense> },
-    { path: "*", element: <div>404 - Unauthorized</div> },
-  ];
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
-  const privateAdminRoutes = [
-    { path: "/admin", element: <Suspense fallback={<div>Loading...</div>}><Layout /></Suspense> },
-    { path: "/admin/customer", element: <Suspense fallback={<div>Loading...</div>}><CustomerIndex /></Suspense> },
-    { path: "/admin/customer/form", element: <Suspense fallback={<div>Loading...</div>}><CustomerForm /></Suspense> },
-    { path: "*", element: <div>404 - Unauthorized</div> },
-  ];
+  console.log({ authUser });
 
-  const privateUserRoutes = [
-    { path: "/chat", element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense> },
-    { path: "*", element: <div>404 - Unauthorized</div> },
-  ];
-
-  // Choose the correct set of routes based on the user status
-  const routes = isAdmin ? privateAdminRoutes : isLoggedIn ? privateUserRoutes : publicRoutes;
+  if (isCheckingAuth && !authUser)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
 
   return (
-    <RouterProvider router={createBrowserRouter(routes)} />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/user/profile-setup" />} />
+        <Route path="/login-customer" element={!authUser ? <LoginCustomer /> : <Navigate to="/chat" />} />
+        <Route path="/chat" element={authUser ? <UserChat /> : <Navigate to="/login-customer" />} />
+        <Route path="/user/profile-setup" element={authUser ? <UserProfileSetup /> : <Navigate to="/login-customer" />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+    // <AuthProvider>
+    //   <Router>
+       
+    //     <Routes>
+    //       {/* Public Routes */}
+    //       <Route
+    //         path="/login-customer"
+    //         element={
+    //           <PublicRoute>
+    //             <LoginCustomer />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //        <Route
+    //         path="/login-customer-code"
+    //         element={
+    //           <PublicRoute>
+    //             <LoginCustomerCode />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/otp-verification"
+    //         element={
+    //           <PublicRoute>
+    //             <OtpVerification />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //        <Route
+    //         path="/forgot-password"
+    //         element={
+    //           <PublicRoute>
+    //             <ForgotPassword />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //        <Route
+    //         path="/forgot-password-verification"
+    //         element={
+    //           <PublicRoute>
+    //             <ForgotPasswordVerification />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/register"
+    //         element={
+    //           <PublicRoute>
+    //             <Register />
+    //           </PublicRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/"
+    //         element={
+    //           <PublicRoute>
+    //             <Home />
+    //           </PublicRoute>
+    //         }
+    //       />
+
+    //       {/* Private Routes */}
+          
+    //       <Route
+    //         path="/chat"
+    //         element={
+    //           <PrivateRoute>
+    //             <UserChat />
+    //           </PrivateRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/admin/customer/form"
+    //         element={
+    //           <PrivateRoute>
+    //             <CustomerForm />
+    //           </PrivateRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/user/profile-setup"
+    //         element={
+    //           <PrivateRoute>
+    //             <UserProfileSetup />
+    //           </PrivateRoute>
+    //         }
+    //       />
+
+
+    //     </Routes>
+    //   </Router>
+    // </AuthProvider>
