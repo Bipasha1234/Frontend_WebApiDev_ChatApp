@@ -1,4 +1,4 @@
-import { Image, Send, X } from "lucide-react";
+import { Image, Plus, Send, X } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useChatStore } from "../../src/core/public/store/useChatStore";
@@ -70,14 +70,25 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+      <button
+            type="button"
+            className={`hidden sm:flex btn btn-circle
+                     ${imagePreview ? "text-emerald-500" : "text-black"}`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Plus size={24} />
+          </button>
         <div className="flex-1 flex gap-2">
+        
           <input
             type="text"
-            className="w-full input input-bordered rounded-lg input-sm sm:input-md"
+            className="py-2 px-2 rounded-lg border outline-none focus:ring-1 
+                       focus:ring-[#c9eee0] focus:border-[#c7ebdd] shadow-sm flex-1  border-gray-300 input-sm sm:input-md"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
+          
           <input
             type="file"
             accept="image/*"
@@ -86,15 +97,16 @@ const MessageInput = () => {
             onChange={handleImageChange}
           />
 
-          <button
+          
+        </div>
+        <button
             type="button"
             className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+                     ${imagePreview ? "text-green-200" : "text-black"}`}
             onClick={() => fileInputRef.current?.click()}
           >
-            <Image size={20} />
+            <Image size={24} />
           </button>
-        </div>
         <button
           type="submit"
           className="btn btn-sm btn-circle"
