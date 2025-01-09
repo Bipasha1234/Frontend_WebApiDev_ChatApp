@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { FaCog, FaComments, FaUserCircle, FaUsers } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from React Router
 
-const SideBar = () => {
-  const [activeTab, setActiveTab] = useState('Chat');
+const SideBar = ({ active }) => {
+  const [activeTab, setActiveTab] = useState(active || 'Chat'); // Default to 'Chat' if not provided
   const navigate = useNavigate(); // Initialize the navigation function
 
   const iconSize = 25;
@@ -18,7 +18,9 @@ const SideBar = () => {
   const handleTabClick = (itemId) => {
     setActiveTab(itemId);
     if (itemId === 'Profile') {
-      navigate('/user/profile-setup'); // Navigate to the profile setup page
+      navigate('/user/profile-setup'); 
+    } else {
+      navigate(`/${itemId.toLowerCase()}`);
     }
   };
 
@@ -30,11 +32,10 @@ const SideBar = () => {
           <div
             key={item.id}
             onClick={() => handleTabClick(item.id)}
-            className={`p-3 rounded-lg cursor-pointer ${
-              activeTab === item.id
-                ? 'bg-[#6cbfa3] text-white'
+            className={`p-3 rounded-lg cursor-pointer ${activeTab === item.id
+                ? 'bg-[#6cbfa3] text-white border-l-4 border-[#1d755d]' // Highlight "Profile" tab only
                 : 'hover:bg-gray-100'
-            }`}
+              }`}
             title={item.label}
           >
             {item.icon}
