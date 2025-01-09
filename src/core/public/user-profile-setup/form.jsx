@@ -30,11 +30,11 @@ const ProfilePage = () => {
     <div className="h-screen flex font-open-sans">
       <SideBar active="Profile" />
 
-      <div className="flex-1 max-w-3xl mx-auto p-6">
-        <div className="shadow rounded-xl p-4 space-y-4 bg-opacity-60 bg-[#98D3BF]">
+      <div className="flex-1 max-w-xl mx-auto p-2">
+        <div className="shadow rounded-xl p-8 space-y-4 bg-opacity-60 bg-[#98D3BF]">
           <div className="text-center space-y-1">
-            <h1 className="text-3xl font-semibold text-gray-800">Profile</h1>
-            <p className="text-gray-500">Manage your profile information and settings</p>
+            <p className="text-1xl font-semibold text-gray-800">Profile - Manage your profile information.</p>
+            
           </div>
 
           {/* Avatar Upload Section */}
@@ -48,7 +48,7 @@ const ProfilePage = () => {
               <label
                 htmlFor="avatar-upload"
                 className={`absolute bottom-0 right-0 
-                bg-[#91ccb6] hover:bg-[#82c6ad] 
+                bg-[#69aa92] hover:bg-[#82c6ad] 
                 text-white p-2 rounded-full cursor-pointer 
                 transition-transform duration-200
                 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
@@ -64,7 +64,7 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500">
               {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
             </p>
           </div>
@@ -81,7 +81,7 @@ const ProfilePage = () => {
               </p>
             </div>
 
-            <div className="bg-gray-50 p-2 rounded-lg shadow-sm space-y-1.5">
+            <div className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-1.5">
               <div className="text-sm text-gray-500 flex items-center gap-2">
                 <Mail className="w-4 h-4" />
                 Email Address
