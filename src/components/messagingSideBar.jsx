@@ -68,7 +68,7 @@ const MessagingSidebar = () => {
           >
             <div className="relative">
               <img
-                src={user.image || "/avatar.png"}
+                src={user.profilePic || "/avatar.png"}
                 alt={user.name}
                 className="w-12 h-12 object-cover rounded-full"
               />

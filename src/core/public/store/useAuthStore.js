@@ -8,8 +8,9 @@ const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
-  isCreatingProfile: false,
+  
   isLoggingIn: false,
+  isUpdatingProfile: false,
   isCheckingAuth: true,
   onlineUsers: [],
   socket: null,
@@ -57,21 +58,18 @@ export const useAuthStore = create((set, get) => ({
   },
 
   
-  // Create Profile After Signup
-  createProfile: async (data) => {
-    set({ isCreatingProfile: true });
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
     try {
-      const res = await axiosInstance.post("/user/profile/create", data);
+      const res = await axiosInstance.put("/auth/update-profile", data);
       set({ authUser: res.data });
-      toast.success("profile created  successfully");
-      get().connectSocket();
+      toast.success("Profile updated successfully");
     } catch (error) {
+      console.log("error in update profile:", error);
       toast.error(error.response.data.message);
     } finally {
-      set({ isCreatingProfile: false });
+      set({ isUpdatingProfile: false });
     }
-
-     
   },
 
   // Login function

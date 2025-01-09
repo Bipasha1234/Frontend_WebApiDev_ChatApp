@@ -73,7 +73,7 @@ const MessageInput = () => {
       <button
             type="button"
             className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-black"}`}
+                     ${imagePreview ? "text-gray-400" : "text-black"}`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Plus size={24} />
@@ -102,7 +102,7 @@ const MessageInput = () => {
         <button
             type="button"
             className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-green-200" : "text-black"}`}
+                     ${imagePreview ? "text-gray-400" : "text-black"}`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={24} />
