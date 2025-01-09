@@ -113,7 +113,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/user/profile-setup" />} />
+        <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/chat" />} />
         <Route path="/login-customer" element={!authUser ? <LoginCustomer /> : <Navigate to="/chat" />} />
         <Route path="/chat" element={authUser ? <UserChat /> : <Navigate to="/login-customer" />} />
         <Route path="/user/profile-setup" element={authUser ? <UserProfileSetup /> : <Navigate to="/login-customer" />} />

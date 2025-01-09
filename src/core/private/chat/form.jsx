@@ -216,31 +216,36 @@
 
 
 
-import { useAuthStore } from "../../public/store/useAuthStore";
 import { useChatStore } from "../../public/store/useChatStore";
 
-import { LogOut, User } from "lucide-react";
-import { Link } from "react-router-dom";
 import ChatContainer from "../../../components/ChatContainer";
-import SideBar from "../../../components/chatSideBar";
+import MessagingSideBar from "../../../components/messagingSideBar";
 import NoChatSelected from "../../../components/NoChatSelected";
-
+import SideBar from "../../../components/SideBar";
 const HomePage = () => {
   const { selectedUser } = useChatStore();
-   const { logout, authUser } = useAuthStore();
+  //  const { logout, authUser } = useAuthStore();
 
   return (
-    <div className="h-screen bg-base-200">
-      <div className="flex items-center justify-center pt-20 px-4">
-        <div className="bg-base-100 rounded-lg shadow-cl w-full max-w-6xl h-[calc(100vh-8rem)]">
+    
+    <div className=" bg-base-200">
+      
+       
+      <div className="flex   ">
+      <SideBar/>
+    
+      
+        <div className="bg-base-100 rounded-lg shadow-cl w-full  h-[calc(120vh-8rem)]">
           <div className="flex h-full rounded-lg overflow-hidden">
-         <SideBar/>
+          <MessagingSideBar/>
+         
+        
 
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
 
-            {authUser && (
+            {/* {authUser && (
               <>
-                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
+                <Link to={"/user/profile-setup"} className={`btn btn-sm gap-2`}>
                   <User className="size-5" />
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
@@ -250,7 +255,7 @@ const HomePage = () => {
                   <span className="hidden sm:inline">Logout</span>
                 </button>
               </>
-            )}
+            )} */}
           </div>
         </div>
       </div>
