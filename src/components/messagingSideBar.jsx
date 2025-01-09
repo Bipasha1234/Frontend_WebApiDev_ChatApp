@@ -27,7 +27,7 @@ const MessagingSidebar = () => {
           <h1 className="text-lg font-semibold text-gray-800">Messaging</h1>
           <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">32</span>
         </div>
-        <button className="text-green-500 text-2xl font-bold">+</button>
+        <button className="text-black text-2xl font-bold">+</button>
       </div>
 
       {/* Search Bar */}
@@ -57,14 +57,14 @@ const MessagingSidebar = () => {
       </div>
 
       {/* User List */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-2 bg-white ">
         {filteredUsers.map((user) => (
           <button
             key={user._id}
             onClick={() => setSelectedUser(user)}
             className={`flex items-center gap-3 w-full p-3 rounded-lg transition-all duration-200 
               hover:bg-green-100 hover:text-black 
-              ${selectedUser?._id === user._id ? "bg-green-200 ring-2 ring-green-400" : ""}`}
+              ${selectedUser?._id === user._id ? "bg-[#e4f6ef] ring-1 ring-[#9bf1c6]" : ""}`}
           >
             <div className="relative">
               <img
@@ -73,7 +73,7 @@ const MessagingSidebar = () => {
                 className="w-12 h-12 object-cover rounded-full"
               />
               {onlineUsers.includes(user._id) && (
-                <span className="absolute bottom-0 right-0 w-3 h-5 bg-green-500 rounded-full ring-2 ring-white" />
+                <span className="absolute bottom-0 right-0 w-3 h-5 bg-[#e4f6ef] rounded-full ring-2 ring-white" />
               )}
             </div>
 
