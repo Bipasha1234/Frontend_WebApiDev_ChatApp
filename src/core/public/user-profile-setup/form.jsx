@@ -1,11 +1,15 @@
 import { Camera, Mail, User } from "lucide-react";
 import { useState } from "react";
+import ChatContainer from "../../../components/ChatContainer";
+import NoChatSelected from "../../../components/NoChatSelected";
 import SideBar from "../../../components/SideBar";
+import { useChatStore } from "../../public/store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile, logout } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
+   const { selectedUser } = useChatStore();
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -27,11 +31,11 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="h-screen flex font-open-sans">
+    <div className=" flex font-open-sans bg-gray-100">
       <SideBar active="Profile" />
 
-      <div className="flex-1 max-w-xl mx-auto p-2">
-        <div className="shadow rounded-xl p-8 space-y-4 bg-opacity-60 bg-[#98D3BF]">
+      <div className="flex-1 max-w-sm  ">
+        <div className="shadow p-8 space-y-3 bg-opacity-60 bg-white">
           <div className="text-center space-y-1">
             <p className="text-1xl font-semibold text-gray-800">Profile - Manage your profile information.</p>
             
@@ -69,26 +73,28 @@ const ProfilePage = () => {
             </p>
           </div>
 
-          {/* Profile Details */}
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-1.5">
-              <div className="text-sm text-gray-500 flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Full Name
+                    {/* Profile Details */}
+          <div className="flex justify-center items-center">
+            <div className="grid grid-cols-1 gap-1 w-80">
+              <div className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-1.5">
+                <div className="text-sm text-gray-500 flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Full Name
+                </div>
+                <p className="text-gray-800 px-4 text-sm py-2.5 bg-gray-100 rounded-lg border">
+                  {authUser?.fullName}
+                </p>
               </div>
-              <p className="text-gray-800 px-4 py-2.5 bg-gray-100 rounded-lg border">
-                {authUser?.fullName}
-              </p>
-            </div>
 
-            <div className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-1.5">
-              <div className="text-sm text-gray-500 flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                Email Address
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm space-y-1.5">
+                <div className="text-sm text-gray-500 flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  Email Address
+                </div>
+                <p className="text-gray-800 text-sm px-4 py-2.5 bg-gray-100 rounded-lg border">
+                  {authUser?.email}
+                </p>
               </div>
-              <p className="text-gray-800 px-4 py-2.5 bg-gray-100 rounded-lg border">
-                {authUser?.email}
-              </p>
             </div>
           </div>
 
@@ -117,7 +123,18 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+     
+      <div className="flex-[3]  ">
+      
+        <div className="bg-base-100 shadow-cl w-100  h-[calc(120vh-8rem)]">
+          <div className="flex h-full overflow-hidden">
+            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+          </div>
+        </div>
+      </div>
+    
     </div>
+    
   );
 };
 

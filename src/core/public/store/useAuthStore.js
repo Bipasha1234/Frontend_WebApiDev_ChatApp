@@ -87,6 +87,8 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  
+
   // Connect socket to the server
   connectSocket: () => {
     const { authUser } = get();

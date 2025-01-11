@@ -88,7 +88,9 @@ import { useAuthStore } from "../src/core/public/store/useAuthStore.js";
 import UserChat from "./core/private/chat/form";
 import Home from "./core/public/home";
 import LoginCustomer from "./core/public/login-user.jsx";
+import OtpVerification from "./core/public/otp-verification";
 import Register from "./core/public/register";
+import LoginCustomerCode from "./core/public/signin-code";
 import UserProfileSetup from "./core/public/user-profile-setup/form";
 
 function App() {
@@ -116,6 +118,8 @@ function App() {
         <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/chat" />} />
         <Route path="/login-customer" element={!authUser ? <LoginCustomer /> : <Navigate to="/chat" />} />
         <Route path="/chat" element={authUser ? <UserChat /> : <Navigate to="/login-customer" />} />
+        <Route path="/login-customer-code" element={!authUser ? <LoginCustomerCode /> : <Navigate to="/otp-verification" />} />
+        <Route path="/otp-verification" element={!authUser ? <OtpVerification /> : <Navigate to="/chat" />} />
         <Route path="/user/profile-setup" element={authUser ? <UserProfileSetup /> : <Navigate to="/login-customer" />} />
       </Routes>
     </Router>
