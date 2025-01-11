@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
-
 import { useAuthStore } from "../../src/core/public/store/useAuthStore";
+import { useChatStore } from "../../src/core/public/store/useChatStore";
 import ChatHeader from "../components/ChatHeader";
 import MessageInput from "../components/MessageInput";
 import MessageSkeleton from "../components/skeletons/MessageSkeleton";
 import { formatMessageTime } from "../lib/utils";
+
 const ChatContainer = () => {
   const {
     messages,
@@ -50,42 +50,67 @@ const ChatContainer = () => {
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+            className={`flex ${
+              message.senderId === authUser._id ? "justify-end" : "justify-start"
+            }`}
             ref={messageEndRef}
           >
-            <div className=" chat-image avatar">
-              <div className="size-10 rounded-full border">
-                <img
-                  src={
-                    message.senderId === authUser._id
-                      ? authUser.image || "/avatar.png"
-                      : selectedUser.image || "/avatar.png"
-                  }
-                  alt="profile pic"
-                />
+            {/* Profile Picture */}
+            {message.senderId !== authUser._id && (
+              <div className="chat-profilePic avatar mr-2">
+                <div className="w-10 h-10 rounded-full border">
+                  <img
+                    src={selectedUser.profilePic || "/avatar.png"}
+                    alt="Receiver Profile"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
-                {formatMessageTime(message.createdAt)}
-              </time>
-            </div>
-            <div className="chat-bubble flex flex-col">
-              {message.image && (
+            )}
+
+            {/* Chat Bubble */}
+            <div
+              className={`chat-bubble px-4 py-2 rounded-lg text-sm shadow ${
+                message.senderId === authUser._id
+                  ? "bg-[#81b9a4] text-white rounded-br-none"
+                  : "bg-gray-200 text-gray-800 rounded-bl-none"
+              }`}
+            >
+              {message.profilePic && (
                 <img
-                  src={message.image}
+                  src={message.profilePic}
                   alt="Attachment"
                   className="sm:max-w-[200px] rounded-md mb-2"
                 />
               )}
               {message.text && <p>{message.text}</p>}
+              <time
+                className={`text-xs opacity-50 mt-1 ${
+                  message.senderId === authUser._id ? "text-right" : "text-left"
+                }`}
+              >
+                {formatMessageTime(message.createdAt)}
+              </time>
             </div>
+
+            {/* Sender Profile Picture */}
+            {message.senderId === authUser._id && (
+              <div className="chat-profilePic avatar ml-2">
+                <div className="w-10 h-10 rounded-full border">
+                  <img
+                    src={authUser.profilePic || "/avatar.png"}
+                    alt="Sender Profile"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         ))}
+        <div ref={messageEndRef} />
       </div>
 
       <MessageInput />
     </div>
   );
 };
+
 export default ChatContainer;
